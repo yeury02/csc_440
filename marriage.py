@@ -35,7 +35,6 @@ def checker():
         else:
             sys.stdout.write('nothing')
             sys.exit(1)
-    # print(i)
 
 if __name__ == "__main__":
     addArgument()

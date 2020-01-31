@@ -20,16 +20,15 @@ def open_file():
         data = file.readlines()
         for line in data:
             words = line.split()
-            print(words)
             lines.append(words)
     
     N = int(lines[0][0])
-    return lines[1:]
+    preferred = lines[N+1:(N*2)+1] + lines[1:N+1]
+    return preferred
 
 def checkRankings(preferred):
     for rank in preferred:
         if len(rank) != N + 1:
-            print(len(rank))
             sys.stdout.write("nothing \n")
 
 def checkMatch(w, m, m2):
@@ -63,11 +62,9 @@ def marry(preferred):
     global women
 
     for w in range(N, N*2):
-        print(preferred[w][0])
         women[preferred[w][0]] = 0
 
     for m in range(0, N):
-        print(preferred[m][0])
         men[preferred[m][0]] = 0
 
     # Stablize the marriage
@@ -89,12 +86,16 @@ def marry(preferred):
                 else:
                     pass               
 
-    print(women)
-    print(men)
-    return 0
+def listMarriage():
+    global men
+    global women
+
+    for woman, man in women.items():
+        print(woman, man)
 
 if __name__ == "__main__":
     add_argument()
     preferred = open_file()
     checkRankings(preferred)
-    court = marry(preferred)
+    marry(preferred)
+    listMarriage()

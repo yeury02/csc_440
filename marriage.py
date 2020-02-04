@@ -8,7 +8,7 @@ women = {}
 def add_argument(argument=1):
     if len(sys.argv) > 2 or len(sys.argv) == 1:
         sys.stdout.write("nothing \n")
-        exit(1)
+        sys.exit(1)
     else:
         return sys.argv[argument]
 
@@ -25,6 +25,18 @@ def open_file():
     N = int(lines[0][0])
     preferred = lines[N+1:(N*2)+1] + lines[1:N+1]
     return preferred
+
+def checker():
+    global N
+    rows = open_file()
+    for row in rows:
+        if len(row) == N+1:
+            continue
+        else:
+            sys.stdout.write('nothing \n')
+            sys.exit(1)
+
+    return rows
 
 def checkRankings(preferred):
     for rank in preferred:
@@ -95,7 +107,7 @@ def listMarriage():
 
 if __name__ == "__main__":
     add_argument()
-    preferred = open_file()
+    preferred = checker()
     checkRankings(preferred)
     marry(preferred)
     listMarriage()

@@ -25,7 +25,7 @@ def open_file():
             lines.append(words)
 
     N = int(lines[0][0])
-    preferred = lines[N+1:(N*2)+1] + lines[1:N+1]
+    preferred = lines[1:]
     return preferred
 
 def checker():
@@ -42,7 +42,7 @@ def checker():
 def checkRankings(preferred):
     for rank in preferred:
         if len(rank) != N + 1:
-            sys.stdout.write("nothing \n")
+            sys.exit(1)
 
 def checkMatch(w, m, m2):
     global preferred
@@ -104,7 +104,7 @@ def listMarriage():
     global women
 
     for woman, man in women.items():
-        print(woman, man)
+        print(man, woman)
 
 if __name__ == "__main__":
     add_argument()

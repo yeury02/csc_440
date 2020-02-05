@@ -1,4 +1,7 @@
 import sys
+import time
+
+start_time = time.time()
 
 N = 0
 preferred = []
@@ -7,7 +10,6 @@ women = {}
 
 def add_argument(argument=1):
     if len(sys.argv) > 2 or len(sys.argv) == 1:
-        sys.stdout.write("nothing \n")
         sys.exit(1)
     else:
         return sys.argv[argument]
@@ -33,7 +35,6 @@ def checker():
         if len(row) == N+1:
             continue
         else:
-            sys.stdout.write('nothing \n')
             sys.exit(1)
 
     return rows
@@ -111,3 +112,4 @@ if __name__ == "__main__":
     checkRankings(preferred)
     marry(preferred)
     listMarriage()
+    print("--- %s seconds ---" % (time.time() - start_time))

@@ -20,7 +20,7 @@ def open_file():
         for line in data:
             words = line.split()
             lines.append(words)
-    
+
     N = int(lines[0][0])
     preferred = lines[1:]
     return preferred
@@ -94,7 +94,7 @@ def marry(preferred):
                     engage(man, best)
                     free(engaged)
                 else:
-                    pass               
+                    pass
 
 def listMarriage():
     global men

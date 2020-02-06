@@ -3,18 +3,31 @@ import time
 
 start_time = time.time()
 
+# N refers to the number of men or women
 N = 0
+
+# Preferred is the data of each person and their rankings
 preferred = []
+
+# Men is a dictionary of the men and their pairing
 men = {}
+
+# Women is a dictionary of the women and their pairing
 women = {}
 
 def add_argument(argument=1):
+    ''' 
+    Checks if the number of arguments is correct 
+    '''
     if len(sys.argv) > 2 or len(sys.argv) == 1:
         sys.exit(1)
     else:
         return sys.argv[argument]
 
 def open_file():
+    ''' 
+    Opens the file and parses the data to return N and the preferred array
+    '''
     global N
     file_name = add_argument()
     lines = []
@@ -29,6 +42,9 @@ def open_file():
     return preferred
 
 def checker():
+    '''
+    Checks if there are the correct amount of people in the list with N men or women
+    '''
     global N
     rows = open_file()
     for row in rows:
@@ -40,37 +56,61 @@ def checker():
     return rows
 
 def checkRankings(preferred):
+    '''
+    Checks if each person has N people ranked
+    '''
     for rank in preferred:
         if len(rank) != N + 1:
             sys.exit(1)
 
 def checkMatch(w, m, m2):
+    '''
+    Checks whether a women wants her current husband
+    or the man that just proposed
+    '''
     global preferred
+    ladies = preferred[N+1:]
 
-    for rank in preferred:
+    for rank in ladies:
         if rank[0] == w:
-            if rank[1] == m2:
-                return True
-            else:
-                return False
+            for man in range(1, N):
+                if rank[man] == m2:
+                    return True
+                elif rank[man] == m:
+                    return False
+                else:
+                    pass
 
 def engage(m, w):
+    '''
+    Pairs the two together in their respective dictionaries
+    '''
     global men
     global women
     men[m] = w
     women[w] = m
 
 def free(m):
+    '''
+    Sets a husband as a free man
+    '''
     global men
     men[m] = 0
 
 def remove(m):
+    '''
+    Removes an option from a man's ranking
+    '''
     global preferred
 
     preferred[m].pop(1)
 
 def marry(preferred):
-    # Lets add the woman and men and initialize them as free
+    '''
+    Implementation of the Gale Shapely Algorithm
+    '''
+
+    # Set each person as free in their respective dictionary; 0 means they are not engaged
     global men
     global women
 
@@ -86,20 +126,20 @@ def marry(preferred):
             man = preferred[m][0]
             best = preferred[m][1]
             if men[man] == 0:
-                if best in men.values():
-                    remove(m)
-
-                else:
-                    engage(man, best)
-            else:
                 engaged = women[best]
-                if checkMatch(best, engaged, man):
+                if engaged == 0:
+                    engage(man, best)
+                elif checkMatch(best, engaged, man):
                     engage(man, best)
                     free(engaged)
+                    
                 else:
-                    pass
+                    remove(m)
 
 def listMarriage():
+    '''
+    Print out the married pairs when marriages are stablized
+    '''
     global men
     global women
 
@@ -107,6 +147,9 @@ def listMarriage():
         print(man, woman)
 
 if __name__ == "__main__":
+    '''
+    Main function
+    '''
     add_argument()
     preferred = checker()
     checkRankings(preferred)

@@ -85,19 +85,19 @@ def sort_by_x_coords(points):
 def divide_half_by_x_coords(points):
 	if len(points) > 5:
 		m = len(points)//2
-		logging.info(m)
+		#logging.info(m)
+		# print(points[m-1][0])
+		#print(points[m])
 		while points[m-1][0] == points[m][0]:
-			print(points[m-1][0])
 			m += 1
-			print(m)
-			l = points[:m].copy()
-			logging.info(l)
+			#print(m)
+		l = points[:m].copy()
+		#logging.info(l)
 
-			r = points[m:].copy()
-			logging.info(r)
-			divide_half_by_x_coords(l)
-
-
+		r = points[m:].copy()
+		#logging.info(r)
+		divide_half_by_x_coords(l)
+		divide_half_by_x_coords(r)
 
 		# logging.info(r)
 		#logging.info(points)
@@ -118,8 +118,8 @@ def computeHull(points):
 
 if __name__ == '__main__':
 
-	# points = [(2,3),(3,4),(3,5),(5,6),(5,7),(5,8),(5,9),(6,8)]
-	points = [(2,3),(3,4),(3,5),(5,6),(5,7),(5,8)]
+	points = [(2,3),(3,4),(3,5),(5,6),(5,7),(5,8),(5,9),(6,8)]
+	# points = [(2,3),(2,4),(3,5),(5,6),(5,7),(5,8)]
 	# for i in range(0,6):
 	# 	x1 = r(1,3)
 	# 	y1 = r(1,3)

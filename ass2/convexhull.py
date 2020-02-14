@@ -82,8 +82,17 @@ def sort_by_x_coords(points):
 	points.sort(key = lambda x: x[0])
 	return points
 
+def remove_duplicates(points):
+	i = 0
+	while i <len(points) - 1:
+		if points[i] == points[i+1]:
+			del points[i]
+		else:
+			i += 1
+	return points
+
 def divide_half_by_x_coords(points):
-	if len(points) > 5:
+	if len(points) > 6:
 		m = len(points)//2
 		#logging.info(m)
 		# print(points[m-1][0])
@@ -92,10 +101,12 @@ def divide_half_by_x_coords(points):
 			m += 1
 			#print(m)
 		l = points[:m].copy()
-		#logging.info(l)
+		# high_x = points[m-1]
+		# print(high_x)
+		logging.info(l)
 
 		r = points[m:].copy()
-		#logging.info(r)
+		logging.info(r)
 		divide_half_by_x_coords(l)
 		divide_half_by_x_coords(r)
 
@@ -104,29 +115,71 @@ def divide_half_by_x_coords(points):
 
 		#divide_half_by_x_coords(r)
 		#computeHull(points)
-	# else:
-	# 	logging.info(points)
+	else:
+		base_case(points)
 
 # def base_case(points):
+# 	for i in range(0,len(points)):
+# 		for j in range(i+1, len(points)):
+# 			x1,y1 = points[i]
+# 			x2,y2 = points[j]
+# 			a1 = y2-y1
+# 			b1 = x2-x1
+# 			c1 = x1*y2-y1*x2
+# 			pos = 0
+# 			neg = 0
+# 			for k in range(0,len(points)):
+# 				if (a1*points[k][0]+b1*points[k][1]+c1 <= 0):
+# 					neg += 1
+# 				if (a1*points[k][0]+b1*points[k][1]+c1 >= 0):
+# 					pos += 1
+# 			#if pos == len(points) or neg == len(poitns):
+
+def base_case(sorted_points):
+	hull = set()
+	for i in range(0,len(points)):
+		for j in range(i+1, len(points)):
+			count_ccw = 0
+			count_cw = 0
+			for k in range(0, len(points)):
+				if ccw(points[i], points[j], points[k]):
+					count_ccw += 1
+				if cw(points[i], points[j], points[k]):
+					count_cw += 1
+			if count_ccw == 0 or count_cw == 0:
+				hull.add(points[i])
+				hull.add(points[j])
+	hull1 = list(hull)
+	print(hull1)
+	return hull1
+	#hi = list(hull)
+	#print(hi)
+	# lol = clockwiseSort(hi)
+	# print(lol)
+	# return lol
 
 '''
 Replace the implementation of computeHull with a correct computation of the convex hull
 using the divide-and-conquer algorithm
 '''
 def computeHull(points):
+	points = base_case(sorted_points)
 	return points
 
 if __name__ == '__main__':
 
-	points = [(2,3),(3,4),(3,5),(5,6),(5,7),(5,8),(5,9),(6,8)]
-	# points = [(2,3),(2,4),(3,5),(5,6),(5,7),(5,8)]
+	#points = [(2,3),(3,4),(3,5),(5,6),(5,7),(5,8),(5,9),(6,8)]
+	points = [(2,2),(2,5),(3,3)]
 	# for i in range(0,6):
 	# 	x1 = r(1,3)
 	# 	y1 = r(1,3)
 	# 	point = (x1,y1)
 	# 	points.append(point)
-	points = sort_by_x_coords(points)
-	#print(points)
+	sorted_points = sort_by_x_coords(points)
+	#print(sorted_points)
 
-	divide_half_by_x_coords(points)
+	#sorted_and_no_duplicates = remove_duplicates(sorted_points)
+	base_case(sorted_points)
+	#divide_half_by_x_coords(points)
+	#base_case(points)
 	#computeHull(points)

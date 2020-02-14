@@ -29,8 +29,8 @@ def yint(p1, p2, x, y3, y4):
 '''
 Given three points a,b,c,
 computes and returns the area defined by the triangle
-a,b,c. 
-Note that this area will be negative 
+a,b,c.
+Note that this area will be negative
 if a,b,c represents a clockwise sequence,
 positive if it is counter-clockwise,
 and zero if the points are collinear.
@@ -41,7 +41,7 @@ def triangleArea(a, b, c):
 
 '''
 Given three points a,b,c,
-returns True if and only if 
+returns True if and only if
 a,b,c represents a clockwise sequence
 (subject to floating-point precision)
 '''
@@ -49,7 +49,7 @@ def cw(a, b, c):
 	return triangleArea(a,b,c) < -EPSILON;
 '''
 Given three points a,b,c,
-returns True if and only if 
+returns True if and only if
 a,b,c represents a counter-clockwise sequence
 (subject to floating-point precision)
 '''
@@ -58,7 +58,7 @@ def ccw(a, b, c):
 
 '''
 Given three points a,b,c,
-returns True if and only if 
+returns True if and only if
 a,b,c are collinear
 (subject to floating-point precision)
 '''
@@ -77,6 +77,7 @@ def clockwiseSort(points):
 	yavg = sum(p[1] for p in points) / len(points)
 	angle = lambda p:  ((math.atan2(p[1] - yavg, p[0] - xavg) + 2*math.pi) % (2*math.pi))
 	points.sort(key = angle)
+	#print(points)
 
 def sort_by_x_coords(points):
 	points.sort(key = lambda x: x[0])
@@ -135,7 +136,10 @@ def divide_half_by_x_coords(points):
 # 					pos += 1
 # 			#if pos == len(points) or neg == len(poitns):
 
-def base_case(sorted_points):
+def base_case(points):
+	if len(points) < 3:
+		return None
+
 	hull = set()
 	for i in range(0,len(points)):
 		for j in range(i+1, len(points)):
@@ -150,36 +154,32 @@ def base_case(sorted_points):
 				hull.add(points[i])
 				hull.add(points[j])
 	hull1 = list(hull)
-	print(hull1)
-	return hull1
 	#hi = list(hull)
-	#print(hi)
-	# lol = clockwiseSort(hi)
-	# print(lol)
-	# return lol
+	#print(hull1)
+	#clockwiseSort(hull1)
+	return clockwiseSort(hull1)
 
 '''
 Replace the implementation of computeHull with a correct computation of the convex hull
 using the divide-and-conquer algorithm
 '''
 def computeHull(points):
-	points = base_case(sorted_points)
-	return points
+	points1 = base_case(points)
+	return points1
 
 if __name__ == '__main__':
 
 	#points = [(2,3),(3,4),(3,5),(5,6),(5,7),(5,8),(5,9),(6,8)]
-	points = [(2,2),(2,5),(3,3)]
+	points = [(5,2),(2,2),(1,5),(1,3),(0,2)]
 	# for i in range(0,6):
 	# 	x1 = r(1,3)
 	# 	y1 = r(1,3)
 	# 	point = (x1,y1)
 	# 	points.append(point)
-	sorted_points = sort_by_x_coords(points)
+	points = sort_by_x_coords(points)
 	#print(sorted_points)
-
 	#sorted_and_no_duplicates = remove_duplicates(sorted_points)
-	base_case(sorted_points)
-	#divide_half_by_x_coords(points)
+	#base_case(sorted_points)
+	#clock_wise_sorted = divide_half_by_x_coords(sorted_points)
 	#base_case(points)
-	#computeHull(points)
+	computeHull(points)

@@ -1,11 +1,7 @@
 import math
 import sys
-import logging
-from random import randint as r
 
 EPSILON = sys.float_info.epsilon
-
-logging.basicConfig(level=logging.INFO, format="%(name)s:%(module)s.%(funcName)s:%(message)s")
 
 '''
 Given two points, p1 and p2,
@@ -83,103 +79,115 @@ def sort_by_x_coords(points):
 	points.sort(key = lambda x: x[0])
 	return points
 
-def remove_duplicates(points):
-	i = 0
-	while i <len(points) - 1:
-		if points[i] == points[i+1]:
-			del points[i]
-		else:
-			i += 1
-	return points
-
-def divide_half_by_x_coords(points):
-	if len(points) > 6:
-		m = len(points)//2
-		#logging.info(m)
-		# print(points[m-1][0])
-		#print(points[m])
-		while points[m-1][0] == points[m][0]:
+def divide_half_by_x_coords(sorted_points):
+	if len(sorted_points) > 6:
+		m = len(sorted_points)//2
+		while sorted_points[m-1][0] == sorted_points[m][0]:
 			m += 1
-			#print(m)
-		l = points[:m].copy()
-		# high_x = points[m-1]
-		# print(high_x)
-		logging.info(l)
+		l = sorted_points[:m]
+		r = sorted_points[m:]
 
-		r = points[m:].copy()
-		logging.info(r)
 		divide_half_by_x_coords(l)
 		divide_half_by_x_coords(r)
 
-		# logging.info(r)
-		#logging.info(points)
+		left_polygon = computeHull(l)
+		right_polygon = computeHull(r)
 
-		#divide_half_by_x_coords(r)
-		#computeHull(points)
+		return merge(left_polygon,right_polygon)
 	else:
-		base_case(points)
+		return base_case(sorted_points)
 
-# def base_case(points):
-# 	for i in range(0,len(points)):
-# 		for j in range(i+1, len(points)):
-# 			x1,y1 = points[i]
-# 			x2,y2 = points[j]
-# 			a1 = y2-y1
-# 			b1 = x2-x1
-# 			c1 = x1*y2-y1*x2
-# 			pos = 0
-# 			neg = 0
-# 			for k in range(0,len(points)):
-# 				if (a1*points[k][0]+b1*points[k][1]+c1 <= 0):
-# 					neg += 1
-# 				if (a1*points[k][0]+b1*points[k][1]+c1 >= 0):
-# 					pos += 1
-# 			#if pos == len(points) or neg == len(poitns):
-
-def base_case(points):
-	if len(points) < 3:
-		return None
+def base_case(sorted_points):
+	if len(sorted_points) < 3:
+		return sorted_points
 
 	hull = set()
-	for i in range(0,len(points)):
-		for j in range(i+1, len(points)):
+	for i in range(0,len(sorted_points)):
+		for j in range(i+1, len(sorted_points)):
 			count_ccw = 0
 			count_cw = 0
-			for k in range(0, len(points)):
-				if ccw(points[i], points[j], points[k]):
+			for k in range(0, len(sorted_points)):
+				if ccw(sorted_points[i], sorted_points[j], sorted_points[k]):
 					count_ccw += 1
-				if cw(points[i], points[j], points[k]):
+				if cw(sorted_points[i], sorted_points[j], sorted_points[k]):
 					count_cw += 1
 			if count_ccw == 0 or count_cw == 0:
-				hull.add(points[i])
-				hull.add(points[j])
-	hull1 = list(hull)
-	#hi = list(hull)
-	#print(hull1)
-	#clockwiseSort(hull1)
-	return clockwiseSort(hull1)
+				hull.add(sorted_points[i])
+				hull.add(sorted_points[j])
+	hull = list(hull)
+	clockwiseSort(hull)
+	return hull
+
+def merge(left,right):
+	# Number of points of both polygons
+    p1 = len(left)
+    p2 = len(right)
+
+	# Right most point of Polygon 1
+    l = 0
+    r = 0
+    for point in range(1, p1):
+        if left[point][0] > left[l][0]:
+            l = point
+
+    # Left most point of Polygon 2
+    for point in range(1, p2):
+        if right[point][0] < right[r][0]:
+            r = point
+
+	# Let's find the upper tanget
+    upperLeft = l
+    upperRight = r
+    flag = False
+    while flag == False:
+        flag = True
+        while cw(right[upperRight], left[upperLeft], left[(upperLeft + 1) % p1]) or collinear(right[upperRight], left[upperLeft], left[(upperLeft + 1) % p1]):
+            upperLeft = (upperLeft + 1) % p1
+
+        while ccw(left[upperLeft], right[upperRight], right[(p2 + upperRight - 1) % p2]) or collinear(left[upperLeft], right[upperRight], right[(p2 + upperRight - 1) % p2]):
+            upperRight = (p2 + upperRight - 1) % p2
+            flag = False
+
+	# Let's find the lower tanget
+    lowerLeft = l
+    lowerRight = r
+    flag = False
+    while flag == False:
+        flag = True
+        while cw(left[lowerLeft], right[lowerRight], right[(lowerRight + 1) % p2]) or collinear(left[lowerLeft], right[lowerRight], right[(lowerRight + 1) % p2]):
+            lowerRight = (lowerRight + 1) % p2
+
+        while ccw(right[lowerRight], left[lowerLeft], left[(p1 + lowerLeft - 1) % p1]) or collinear(left[lowerLeft], right[lowerRight], right[(lowerRight + 1) % p2]):
+            lowerLeft = (p1 + lowerLeft - 1) % p1
+            flag = False
+
+	# Finding the right and left tangents
+    # to complete merge
+    hull = []
+
+    upperTan = upperLeft
+    hull.append(left[upperLeft])
+    while upperTan != lowerLeft:
+        upperTan = (upperTan + 1) % p1
+        hull.append(left[upperTan])
+
+    lowerTan = lowerRight
+    hull.append(right[lowerRight])
+    while lowerTan != upperRight:
+        lowerTan = (lowerTan + 1) % p2
+        hull.append(right[lowerTan])
+
+    return hull
 
 '''
 Replace the implementation of computeHull with a correct computation of the convex hull
 using the divide-and-conquer algorithm
 '''
 def computeHull(points):
-	points1 = base_case(points)
-	return points1
+	sorted_points = sort_by_x_coords(points)
+	return divide_half_by_x_coords(sorted_points)
 
 if __name__ == '__main__':
-
-	#points = [(2,3),(3,4),(3,5),(5,6),(5,7),(5,8),(5,9),(6,8)]
-	points = [(5,2),(2,2),(1,5),(1,3),(0,2)]
-	# for i in range(0,6):
-	# 	x1 = r(1,3)
-	# 	y1 = r(1,3)
-	# 	point = (x1,y1)
-	# 	points.append(point)
-	points = sort_by_x_coords(points)
-	#print(sorted_points)
-	#sorted_and_no_duplicates = remove_duplicates(sorted_points)
-	#base_case(sorted_points)
-	#clock_wise_sorted = divide_half_by_x_coords(sorted_points)
-	#base_case(points)
-	computeHull(points)
+	points = [(0,0),(0,1),(0,2),(0,3),(1,0),(1,1),(1,2),(1,3),(1,4)]
+	print(computeHull(points))
+	

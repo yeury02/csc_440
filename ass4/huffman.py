@@ -10,24 +10,43 @@ except:
     import pickle
 
 def encode(msg):
-    frecuency = dict()
+    frequency = dict()
     for char in msg:
-        if char not in frecuency:
-            frecuency[char] = 0
-        frecuency[char] += 1
+        if char not in frequency:
+            frequency[char] = 0
+        frequency[char] += 1
     
-    "Huffman encode the given dict mapping symbols to weights"
-    heap = [[wt, [sym, ""]] for sym, wt in frecuency.items()]
-    heapify(heap)
-    while len(heap) > 1:
-        lo = heappop(heap)
-        hi = heappop(heap)
-        for pair in lo[1:]:
-            pair[1] = '0' + pair[1]
-        for pair in hi[1:]:
-            pair[1] = '1' + pair[1]
-        heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
-    return sorted(heappop(heap)[1:], key=lambda p: (len(p[-1]), p))
+    letters = frequency.keys()
+    tuples = []
+    for char in letters :
+        tuples.append((frequency[char],char))
+        tuples.sort()
+    return tuples
+    
+def buildTree(tuples):
+    while len(tuples) > 1 :
+        leastTwo = tuple(tuples[0:2])                  # get the 2 to combine
+        theRest  = tuples[2:]                          # all the others
+        combFreq = leastTwo[0][0] + leastTwo[1][0]     # the branch points freq
+        tuples   = theRest + [(combFreq,leastTwo)]     # add branch point to the end
+        tuples.sort()                                  # sort it into place
+    return tuples[0]                                   # Return the single tree inside the list
+
+
+
+
+    # "Huffman encode the given dict mapping symbols to weights"
+    # heap = [[wt, [sym, ""]] for sym, wt in frecuency.items()]
+    # heapify(heap)
+    # while len(heap) > 1:
+    #     lo = heappop(heap)
+    #     hi = heappop(heap)
+    #     for pair in lo[1:]:
+    #         pair[1] = '0' + pair[1]
+    #     for pair in hi[1:]:
+    #         pair[1] = '1' + pair[1]
+    #     heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
+    # return sorted(heappop(heap)[1:], key=lambda p: (len(p[-1]), p))
 
 
 def decode(msg, decoderRing):
@@ -51,7 +70,7 @@ def usage():
     exit(1)
 
 if __name__=='__main__':
-    msg = 'aab'
+    msg = 'hello'
     print(encode(msg))
     if len(sys.argv) != 4:
         usage()

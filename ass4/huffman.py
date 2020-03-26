@@ -2,7 +2,7 @@ import os
 import sys
 import marshal
 import array
-import heapq
+from heapq import heappush, heappop, heapify
 
 try:
     import cPickle as pickle
@@ -12,11 +12,22 @@ except:
 def encode(msg):
     frecuency = dict()
     for char in msg:
-        if char not in msg:
+        if char not in frecuency:
             frecuency[char] = 0
         frecuency[char] += 1
     
-    for key in frecuency:
+    "Huffman encode the given dict mapping symbols to weights"
+    heap = [[wt, [sym, ""]] for sym, wt in frecuency.items()]
+    heapify(heap)
+    while len(heap) > 1:
+        lo = heappop(heap)
+        hi = heappop(heap)
+        for pair in lo[1:]:
+            pair[1] = '0' + pair[1]
+        for pair in hi[1:]:
+            pair[1] = '1' + pair[1]
+        heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
+    return sorted(heappop(heap)[1:], key=lambda p: (len(p[-1]), p))
 
 
 def decode(msg, decoderRing):
@@ -40,6 +51,8 @@ def usage():
     exit(1)
 
 if __name__=='__main__':
+    msg = 'aab'
+    print(encode(msg))
     if len(sys.argv) != 4:
         usage()
     opt = sys.argv[1]

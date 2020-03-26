@@ -9,7 +9,16 @@ except:
     import pickle
 
 def encode(msg):
-
+    # creates a list of characters and their frecuency
+    # creates a list of characters in use
+    letters = []
+    non_repeated_letters = []
+    for char in msg:
+        if char not in letters:
+            freq = msg.count(char)
+            letters.append(freq)
+            letters.append(char)
+            non_repeated_letters.append(char)
     raise NotImplementedError
 
 def decode(msg, decoderRing):

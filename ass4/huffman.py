@@ -9,20 +9,6 @@ try:
 except:
     import pickle
 
-def encode(msg):
-    frequency = dict()
-    for char in msg:
-        if char not in frequency:
-            frequency[char] = 0
-        frequency[char] += 1
-    
-    letters = frequency.keys()
-    tuples = []
-    for char in letters :
-        tuples.append((frequency[char],char))
-    tuples.sort()
-    return tuples
-
 def build_tree(tuples):
     heap = []
     for l_f in tuples: heapq.heappush(heap, [l_f])
@@ -47,7 +33,19 @@ def build_tree(tuples):
     #why use heap.pop()
     return heap.pop()
 
-
+def encode(msg):
+    frequency = dict()
+    for char in msg:
+        if char not in frequency:
+            frequency[char] = 0
+        frequency[char] += 1
+    
+    letters = frequency.keys()
+    tuples = []
+    for char in letters :
+        tuples.append((frequency[char],char))
+    tuples.sort()
+    return tuples
     
 # def buildTree():
 #     tuples = encode(msg)
@@ -97,7 +95,7 @@ def usage():
     exit(1)
 
 if __name__=='__main__':
-    msg = 'hello'
+    msg = 'aabc'
     tuples = encode(msg)
     print(tuples)
     print()

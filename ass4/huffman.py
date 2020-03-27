@@ -11,9 +11,9 @@ except:
 
 def build_tree(tuples):
     heap = []
-    for l_f in tuples: heapq.heappush(heap, [l_f])
-    # print(heap)
-    while (len(heap) > 1):
+    [heapq.heappush(heap, [l_f, None, None]) for l_f in tuples]
+
+    while len(heap) > 1:
         left_child = heapq.heappop(heap)
         right_child = heapq.heappop(heap)
         #print(left_child, right_child)
@@ -22,11 +22,12 @@ def build_tree(tuples):
         # print(left_freq, left_char)
         # print(right_freq, right_char)
         freq = left_freq + right_freq
-        label = ''.join(sorted(left_char + right_char))
+
+        label = ''.join((left_char,right_char))
         #print(freq, label)
 
         #create node
-        node = [(freq, label), left_child, right_child]
+        node = [(freq, ''), left_child, right_child]
         #print(node)
         heapq.heappush(heap, node)
     #print(heap)
@@ -40,12 +41,22 @@ def encode(msg):
             frequency[char] = 0
         frequency[char] += 1
     
-    letters = frequency.keys()
     tuples = []
-    for char in letters :
+    for char in frequency.keys():
         tuples.append((frequency[char],char))
     tuples.sort()
-    return tuples
+    #return tuples
+    tree = build_tree(tuples)
+    return tree
+
+    
+
+
+
+
+
+
+
     
 # def buildTree():
 #     tuples = encode(msg)
@@ -98,9 +109,7 @@ if __name__=='__main__':
     msg = 'aabc'
     tuples = encode(msg)
     print(tuples)
-    print()
-    print()
-    print(build_tree(tuples))
+    #print(build_tree(tuples))
     # print(buildTree())
 
 

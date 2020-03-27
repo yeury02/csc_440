@@ -33,8 +33,20 @@ def build_tree(tuples):
         #print(left_child, right_child)
         left_freq, left_char = left_child[0]
         right_freq, right_char = right_child[0]
-        print(left_freq, left_char)
-        print(right_freq, right_char)
+        # print(left_freq, left_char)
+        # print(right_freq, right_char)
+        freq = left_freq + right_freq
+        label = ''.join(sorted(left_char + right_char))
+        #print(freq, label)
+
+        #create node
+        node = [(freq, label), left_child, right_child]
+        #print(node)
+        heapq.heappush(heap, node)
+    #print(heap)
+    #why use heap.pop()
+    return heap.pop()
+
 
     
 # def buildTree():
@@ -87,7 +99,10 @@ def usage():
 if __name__=='__main__':
     msg = 'hello'
     tuples = encode(msg)
-    build_tree(tuples)
+    print(tuples)
+    print()
+    print()
+    print(build_tree(tuples))
     # print(buildTree())
 
 

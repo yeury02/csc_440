@@ -9,6 +9,8 @@ try:
 except:
     import pickle
 
+key = dict()
+
 def build_tree(tuples):
     heap = []
     [heapq.heappush(heap, [l_f, None, None]) for l_f in tuples]
@@ -34,6 +36,16 @@ def build_tree(tuples):
     #why use heap.pop()
     return heap.pop()
 
+def traverse_tree(node, code):
+    global key
+    if node is None:
+        return
+    elif node[0][1] != '':
+        key[node[0][1]] = code
+    else:
+        traverse_tree(node[1], code + '0')
+        traverse_tree(node[2], code + '1')
+
 def encode(msg):
     frequency = dict()
     for char in msg:
@@ -45,11 +57,10 @@ def encode(msg):
     for char in frequency.keys():
         tuples.append((frequency[char],char))
     tuples.sort()
-    #return tuples
-    tree = build_tree(tuples)
-    return tree
 
-    
+    tree = build_tree(tuples)
+    traverse_tree(tree, '')
+    print(key)
 
 
 
@@ -107,8 +118,9 @@ def usage():
 
 if __name__=='__main__':
     msg = 'aabc'
-    tuples = encode(msg)
-    print(tuples)
+    encode(msg)
+    # tuples = encode(msg)
+    # print(tuples)
     #print(build_tree(tuples))
     # print(buildTree())
 

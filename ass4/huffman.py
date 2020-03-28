@@ -60,7 +60,8 @@ def encode(msg):
 
     tree = build_tree(tuples)
     traverse_tree(tree, '')
-    print(key)
+    #code = key.values()
+    return ''.join(key.values())
 
 
 
@@ -117,8 +118,8 @@ def usage():
     exit(1)
 
 if __name__=='__main__':
-    msg = 'aabc'
-    encode(msg)
+    msg = 'abacdaebfa'
+    print(encode(msg))
     # tuples = encode(msg)
     # print(tuples)
     #print(build_tree(tuples))

@@ -9,8 +9,6 @@ try:
 except:
     import pickle
 
-key = dict()
-
 def build_tree(tuples):
     heap = []
     [heapq.heappush(heap, [l_f, None, None]) for l_f in tuples]
@@ -36,15 +34,14 @@ def build_tree(tuples):
     #why use heap.pop()
     return heap.pop()
 
-def traverse_tree(node, code):
-    global key
+def traverse_tree(node, code, key_):
     if node is None:
         return
     elif node[0][1] != '':
-        key[node[0][1]] = code
+        key_[node[0][1]] = code
     else:
-        traverse_tree(node[1], code + '0')
-        traverse_tree(node[2], code + '1')
+        traverse_tree(node[1], code + '0', key_)
+        traverse_tree(node[2], code + '1', key_)
 
 def encode(msg):
     frequency = dict()
@@ -58,44 +55,16 @@ def encode(msg):
         tuples.append((frequency[char],char))
     tuples.sort()
 
+
     tree = build_tree(tuples)
-    traverse_tree(tree, '')
-    #code = key.values()
-    return ''.join(key.values())
+    key = dict()
+    traverse_tree(tree, '', key)
 
+    encoded_message = ''
+    for char in msg:
+        encoded_message += key[char]
 
-
-
-
-
-
-    
-# def buildTree():
-#     tuples = encode(msg)
-#     while len(tuples) > 1 :
-#         leastTwo = tuple(tuples[0:2])                  # get the 2 to combine
-#         theRest  = tuples[2:]                          # all the others
-#         combFreq = leastTwo[0][0] + leastTwo[1][0]     # the branch points freq
-#         tuples   = theRest + [(combFreq,leastTwo)]     # add branch point to the end
-#         tuples.sort()                                  # sort it into place
-#     return tuples[0]                                   # Return the single tree inside the list
-
-
-
-
-    # "Huffman encode the given dict mapping symbols to weights"
-    # heap = [[wt, [sym, ""]] for sym, wt in frecuency.items()]
-    # heapify(heap)
-    # while len(heap) > 1:
-    #     lo = heappop(heap)
-    #     hi = heappop(heap)
-    #     for pair in lo[1:]:
-    #         pair[1] = '0' + pair[1]
-    #     for pair in hi[1:]:
-    #         pair[1] = '1' + pair[1]
-    #     heappush(heap, [lo[0] + hi[0]] + lo[1:] + hi[1:])
-    # return sorted(heappop(heap)[1:], key=lambda p: (len(p[-1]), p))
-
+    return encoded_message, key
 
 def decode(msg, decoderRing):
 
@@ -118,7 +87,7 @@ def usage():
     exit(1)
 
 if __name__=='__main__':
-    msg = 'abacdaebfa'
+    msg = 'hello'
     print(encode(msg))
     # tuples = encode(msg)
     # print(tuples)

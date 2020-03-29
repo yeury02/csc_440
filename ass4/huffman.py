@@ -88,20 +88,29 @@ def encode(msg):
 
     return encoded_message, key
 
-# def decode(msg, decoderRing):
-    # temp=root
-    # string=[]
-    # for i in s:
-    #     c=int(i)
-    #     if c==1:
-    #         temp=temp.right
-    #     elif c==0:
-    #         temp=temp.left
-    #     if temp.right==None and temp.left==None:
-    #         string.append(temp.data)
-    #         temp=root
-    # b=''.join(string)
-    # print b
+def decode(msg, decoderRing):
+    frequency = find_frequency('hello')
+    tuples = turn_dict_to_tuple(frequency)
+    tree = entire_tree = build_tree(tuples)
+    decoted_letters = []
+    for bit in msg:
+        if bit == '0':
+            tree = tree[1]
+        else:
+            tree = tree[2]
+        if tree[1] == None and tree[2] == None:
+            label = tree[0]
+            decoted_letters.append(label[1])
+            print(decoted_letters)
+            decoted_letters += str(label)
+            tree = entire_tree
+    # print(type(decoted_letters))
+    # decoted_message = ''
+    # for char in decoted_letters:
+    #     print('{} : {}'.format(char[0], char[1]))
+    #     decoted_message += char[1]
+
+    # return str(decoted_letters)
 
 
 # def compress(msg):
@@ -125,7 +134,7 @@ if __name__=='__main__':
 
     encoded_message, key = encode(msg)
     print(encoded_message, key)
-    #decode(encoded_message, key)
+    decode(encoded_message, key)
     # tuples = encode(msg)
     # print(tuples)
     #print(build_tree(tuples))

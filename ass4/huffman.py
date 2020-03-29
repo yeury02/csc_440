@@ -43,20 +43,42 @@ def traverse_tree(node, code, key_):
         traverse_tree(node[1], code + '0', key_)
         traverse_tree(node[2], code + '1', key_)
 
-def encode(msg):
+def find_frequency(msg):
     frequency = dict()
     for char in msg:
         if char not in frequency:
             frequency[char] = 0
         frequency[char] += 1
-    
+    return frequency
+
+def turn_dict_to_tuple(frequency):
     tuples = []
     for char in frequency.keys():
         tuples.append((frequency[char],char))
     tuples.sort()
+    return tuples
+
+
+def encode(msg):
+    # frequency = dict()
+    # for char in msg:
+    #     if char not in frequency:
+    #         frequency[char] = 0
+    #     frequency[char] += 1
+    frequency = find_frequency(msg)
+
+    
+    # tuples = []
+    # for char in frequency.keys():
+    #     tuples.append((frequency[char],char))
+    # tuples.sort()
+
+    tuples = turn_dict_to_tuple(frequency)
+
 
 
     tree = build_tree(tuples)
+    print(tree)
     key = dict()
     traverse_tree(tree, '', key)
 
@@ -66,29 +88,44 @@ def encode(msg):
 
     return encoded_message, key
 
-def decode(msg, decoderRing):
+# def decode(msg, decoderRing):
+    # temp=root
+    # string=[]
+    # for i in s:
+    #     c=int(i)
+    #     if c==1:
+    #         temp=temp.right
+    #     elif c==0:
+    #         temp=temp.left
+    #     if temp.right==None and temp.left==None:
+    #         string.append(temp.data)
+    #         temp=root
+    # b=''.join(string)
+    # print b
 
-    raise NotImplementedError
 
-def compress(msg):
+# def compress(msg):
 
-    # Initializes an array to hold the compressed message.
-    compressed = array.array('B')
-    raise NotImplementedError
+#     # Initializes an array to hold the compressed message.
+#     compressed = array.array('B')
+#     raise NotImplementedError
 
-def decompress(msg, decoderRing):
+# def decompress(msg, decoderRing):
 
-    # Represent the message as an array
-    byteArray = array.array('B',msg)
-    raise NotImplementedError
+#     # Represent the message as an array
+#     byteArray = array.array('B',msg)
+#     raise NotImplementedError
 
-def usage():
-    sys.stderr.write("Usage: {} [-c|-d|-v|-w] infile outfile\n".format(sys.argv[0]))
-    exit(1)
+# def usage():
+#     sys.stderr.write("Usage: {} [-c|-d|-v|-w] infile outfile\n".format(sys.argv[0]))
+#     exit(1)
 
 if __name__=='__main__':
     msg = 'hello'
-    print(encode(msg))
+
+    encoded_message, key = encode(msg)
+    print(encoded_message, key)
+    #decode(encoded_message, key)
     # tuples = encode(msg)
     # print(tuples)
     #print(build_tree(tuples))

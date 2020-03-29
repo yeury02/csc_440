@@ -85,35 +85,37 @@ def encode(msg):
     encoded_message = ''
     for char in msg:
         encoded_message += key[char]
+    
+    # swaps keys and values ex: 'l':0 -> 0:'l'
+    decoder_ring = dict()
+    for k, v in key.items():
+        decoder_ring[v] = k
 
-    return encoded_message, key
+    return encoded_message, decoder_ring
 
 def decode(msg, decoderRing):
-    frequency = find_frequency('hello')
-    tuples = turn_dict_to_tuple(frequency)
-    tree = entire_tree = build_tree(tuples)
-    decoted_letters = []
-    for bit in msg:
-        if bit == '0':
-            tree = tree[1]
-        else:
-            tree = tree[2]
-        if tree[1] == None and tree[2] == None:
-            label = tree[0]
-            decoted_letters.append(label[1])
-            print(decoted_letters)
-            decoted_letters += str(label)
-            tree = entire_tree
-    # print(type(decoted_letters))
-    # decoted_message = ''
-    # for char in decoted_letters:
-    #     print('{} : {}'.format(char[0], char[1]))
-    #     decoted_message += char[1]
+    decoded = ''
 
-    # return str(decoted_letters)
+    # 'H    e  l l  0' 
+    # '111 110 0 0 10'
+    # {'0': 'l', '10': 'o', '110': 'e', '111': 'h'}
 
+    flag = True
+    start = 0
+    i = 0
+    while flag:
+        while i < len(msg):
+            if msg[start:start+i] in decoderRing.keys():
+                decoded += decoderRing[msg[start:start+i]]
+                start += i
+                i = -1
+            if start+i > len(msg):
+                flag = False
+            i += 1
+    return decoded
 
-# def compress(msg):
+def compress(msg):
+    print(msg)
 
 #     # Initializes an array to hold the compressed message.
 #     compressed = array.array('B')
@@ -132,13 +134,10 @@ def decode(msg, decoderRing):
 if __name__=='__main__':
     msg = 'hello'
 
-    encoded_message, key = encode(msg)
-    print(encoded_message, key)
-    decode(encoded_message, key)
-    # tuples = encode(msg)
-    # print(tuples)
-    #print(build_tree(tuples))
-    # print(buildTree())
+    encoded_message, decoder_ring = encode(msg)
+    print(encoded_message, decoder_ring)
+    print(decode(encoded_message, decoder_ring))
+    print(compress(msg))
 
 
     # if len(sys.argv) != 4:

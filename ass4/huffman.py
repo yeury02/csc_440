@@ -137,7 +137,7 @@ if __name__=='__main__':
     encoded_message, decoder_ring = encode(msg)
     print(encoded_message, decoder_ring)
     print(decode(encoded_message, decoder_ring))
-    print(compress(msg))
+    #print(compress(msg))
 
 
     # if len(sys.argv) != 4:

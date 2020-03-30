@@ -60,25 +60,10 @@ def turn_dict_to_tuple(frequency):
 
 
 def encode(msg):
-    # frequency = dict()
-    # for char in msg:
-    #     if char not in frequency:
-    #         frequency[char] = 0
-    #     frequency[char] += 1
     frequency = find_frequency(msg)
-
-    
-    # tuples = []
-    # for char in frequency.keys():
-    #     tuples.append((frequency[char],char))
-    # tuples.sort()
-
     tuples = turn_dict_to_tuple(frequency)
-
-
-
     tree = build_tree(tuples)
-    print(tree)
+
     key = dict()
     traverse_tree(tree, '', key)
 
@@ -95,13 +80,9 @@ def encode(msg):
 
 def decode(msg, decoderRing):
     decoded = ''
-
-    # 'H    e  l l  0' 
-    # '111 110 0 0 10'
-    # {'0': 'l', '10': 'o', '110': 'e', '111': 'h'}
-
     flag = True
     start = 0
+    
     i = 0
     while flag:
         while i < len(msg):
@@ -115,7 +96,22 @@ def decode(msg, decoderRing):
     return decoded
 
 def compress(msg):
-    print(msg)
+    enc, ring = encode(msg)
+    if len(enc) % 8 != '0':
+        # print(len(encoded_message))
+        # print(len(encoded_message) % 8)
+        enc += (8 - (len(enc) % 8)) * '0'
+        print(len(enc), enc)
+    
+    arr = ''
+    for bit in enc:
+        arr += bit
+        print(len(arr))
+        if len(arr) == 8:
+            print('here')
+            array.array(arr)
+            print(array.array(arr))
+
 
 #     # Initializes an array to hold the compressed message.
 #     compressed = array.array('B')
@@ -135,9 +131,9 @@ if __name__=='__main__':
     msg = 'hello'
 
     encoded_message, decoder_ring = encode(msg)
-    print(encoded_message, decoder_ring)
-    print(decode(encoded_message, decoder_ring))
-    #print(compress(msg))
+    #print(encoded_message, decoder_ring)
+    #print(decode(encoded_message, decoder_ring))
+    compress(msg)
 
 
     # if len(sys.argv) != 4:

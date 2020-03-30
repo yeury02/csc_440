@@ -108,9 +108,7 @@ def compress(msg):
         arr += bit
         print(len(arr))
         if len(arr) == 8:
-            print('here')
-            array.array(arr)
-            print(array.array(arr))
+            lol = array.array(arr)
 
 
 #     # Initializes an array to hold the compressed message.

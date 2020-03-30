@@ -71,6 +71,12 @@ def encode(msg):
     for char in msg:
         encoded_message += key[char]
     
+    if len(encoded_message) % 8 != '0':
+        # print(len(encoded_message))
+        # print(len(encoded_message) % 8)
+        encoded_message += (8 - (len(encoded_message) % 8)) * '0'
+        #print(len(enc), enc)
+    
     # swaps keys and values ex: 'l':0 -> 0:'l'
     decoder_ring = dict()
     for k, v in key.items():
@@ -97,25 +103,19 @@ def decode(msg, decoderRing):
 
 def compress(msg):
     enc, ring = encode(msg)
-    if len(enc) % 8 != '0':
-        # print(len(encoded_message))
-        # print(len(encoded_message) % 8)
-        enc += (8 - (len(enc) % 8)) * '0'
-        print(len(enc), enc)
-    
     arr = ''
+    list_of_bytes = []
     for bit in enc:
         arr += bit
-        print(len(arr))
         if len(arr) == 8:
-            lol = array.array(arr)
+            byte = int(arr, 2)
+            list_of_bytes.append(byte)
+            arr = ''
+    ans = array.array('B', list_of_bytes)   
+    return ans, ring
 
-
-#     # Initializes an array to hold the compressed message.
-#     compressed = array.array('B')
-#     raise NotImplementedError
-
-# def decompress(msg, decoderRing):
+def decompress(msg, decoderRing):
+    print(msg, decoderRing)
 
 #     # Represent the message as an array
 #     byteArray = array.array('B',msg)
@@ -131,7 +131,8 @@ if __name__=='__main__':
     encoded_message, decoder_ring = encode(msg)
     #print(encoded_message, decoder_ring)
     #print(decode(encoded_message, decoder_ring))
-    compress(msg)
+    #print(compress(msg))
+    decompress(encoded_message, decoder_ring)
 
 
     # if len(sys.argv) != 4:

@@ -85,10 +85,13 @@ def encode(msg):
     return encoded_message, decoder_ring
 
 def decode(msg, decoderRing):
+
+    #removes unneccesary 0's
+
     decoded = ''
     flag = True
     start = 0
-    
+
     i = 0
     while flag:
         while i < len(msg):
@@ -115,7 +118,11 @@ def compress(msg):
     return ans, ring
 
 def decompress(msg, decoderRing):
-    print(msg, decoderRing)
+    remove_zeros = ''
+    print(len(msg))
+    # if len(msg) % 8 != '0':
+        
+    #     remove_zeros -= (8 - (len(msg) % 8)) * '0'
 
 #     # Represent the message as an array
 #     byteArray = array.array('B',msg)
@@ -130,9 +137,10 @@ if __name__=='__main__':
 
     encoded_message, decoder_ring = encode(msg)
     #print(encoded_message, decoder_ring)
+    decode(encoded_message, decoder_ring)
     #print(decode(encoded_message, decoder_ring))
     #print(compress(msg))
-    decompress(encoded_message, decoder_ring)
+    #decompress(encoded_message, decoder_ring)
 
 
     # if len(sys.argv) != 4:

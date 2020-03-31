@@ -132,7 +132,6 @@ def compress(msg):
         # num = (8 - (len(enc) % 8))
         # enc += (num-1) * '0'
         # enc += str(num)
-
     arr = ''
     list_of_bytes = []
     for bit in enc:

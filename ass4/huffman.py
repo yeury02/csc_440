@@ -70,13 +70,17 @@ def encode(msg):
     encoded_message = ''
     for char in msg:
         encoded_message += key[char]
+    # print(len(encoded_message))
     
     if len(encoded_message) % 8 != '0':
         # print(len(encoded_message))
         # print(len(encoded_message) % 8)
         num = (8 - (len(encoded_message) % 8))
-        encoded_message += (num-1) * '0'
+        encoded_message += (num) * '0'
         encoded_message += str(num)
+    # print(len(encoded_message), encoded_message)
+    # print(num)
+    
     
     # swaps keys and values ex: 'l':0 -> 0:'l'
     decoder_ring = dict()
@@ -87,10 +91,10 @@ def encode(msg):
 
 def decode(msg, decoderRing):
     #removes unneccesary 0's
-    msg = list(msg)
     length = msg[-1]
+    msg = list(msg)
     i = 0
-    while i < int(length):
+    while i < int(length)+1:
         msg.pop()
         i += 1
     
@@ -113,36 +117,16 @@ def decode(msg, decoderRing):
     return decoded
 
 def compress(msg):
-     #removes unneccesary 0's
-    # msg = list(msg)
-    # print(msg)
-    # length = msg[-1]
-    # i = 0
-    # while i < int(length):
-    #     msg.pop()
-    #     i += 1
-    # msg = ''.join(msg)
 
     enc, ring = encode(msg)
-    print(enc, ring)
+    # print(len(enc), ring)
 
     enc = list(enc)
     if len(enc) % 8 != '0':
         enc.pop()
     enc = ''.join(enc)
-    
-    print(enc)
+    # print(len(enc))
 
-
-
-
-    # if len(enc) % 8 != '0':
-    #     # print(len(encoded_message))
-    #     # print(len(encoded_message) % 8)
-    #     enc += (8-(len(enc) % 8)) * '0'
-    #     # num = (8 - (len(enc) % 8))
-    #     # enc += (num-1) * '0'
-    #     # enc += str(num)
     arr = ''
     list_of_bytes = []
     for bit in enc:
@@ -156,12 +140,15 @@ def compress(msg):
 
 def decompress(msg, decoderRing):
 
+    msg = ''.join(format(ord(i), 'b') for i in msg) 
+    print(msg)
+
     decoded = decode(msg, decoderRing)
-
-    print(decoderRing)
-
-    res = '_'.join(format(ord(i), 'b') for i in decoded) 
+    print()
     
+    # first convert msg to string of 1's and 0's
+    # then pass to decode
+    # then convert to bytes object and return
 
 
     
@@ -176,13 +163,13 @@ def decompress(msg, decoderRing):
 if __name__=='__main__':
     msg = 'hello'
 
-    #encoded_message, decoder_ring = encode(msg)
+    encoded_message, decoder_ring = encode(msg)
     #print(encoded_message, decoder_ring)
     #decode(encoded_message, decoder_ring)
     #print(decode(encoded_message, decoder_ring))
     #print(compress(msg))
-    # compress(msg)
-    #decompress(encoded_message, decoder_ring)
+    #compress(msg)
+    decompress(encoded_message, decoder_ring)
 
 
     # if len(sys.argv) != 4:

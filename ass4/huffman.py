@@ -16,7 +16,7 @@ def build_tree(tuples):
 
     while len(heap) > 1:
         left_child = heapq.heappop(heap)
-        right_child = heapq.heappop(heap)           
+        right_child = heapq.heappop(heap)
 
         left_freq = left_child[0][0]
         right_freq = right_child[0][0]
@@ -24,8 +24,9 @@ def build_tree(tuples):
         freq = left_freq + right_freq           # gets the freq of two nodes
 
         node = [(freq, ''), left_child, right_child]
+
         heapq.heappush(heap, node)
-    
+
     # returns heap
     return heap.pop()
 
@@ -157,14 +158,14 @@ def usage():
     exit(1)
 
 if __name__=='__main__':
-    # msg = 'hello'
-    # encoded_message, decoder_ring = encode(msg)
+    #msg = 'hello'
+    #encoded_message, decoder_ring = encode(msg)
     # print(encoded_message, decoder_ring)
     # #decode(encoded_message, decoder_ring)
     # print(decode(encoded_message, decoder_ring))
     # print(compress(msg))
     # comp, ring = compress(msg)
-    # print(decompress(comp, ring))
+    # decompress(comp, ring)
     #print(string_2_bits('1111100010'))
 
     if len(sys.argv) != 4:

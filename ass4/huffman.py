@@ -71,19 +71,20 @@ def encode(msg):
     for char in msg:
         encoded_message += key[char]
     # print(len(encoded_message))
-    
+    decoder_ring = dict()
     if len(encoded_message) % 8 != 0:
         # print(len(encoded_message))
         # print(len(encoded_message) % 8)
         num = (8 - (len(encoded_message) % 8))
         encoded_message += (num) * '0'
-        encoded_message += str(num)
+        #encoded_message += str(num)
+        decoder_ring['num_zeros'] = num
     # print(len(encoded_message), encoded_message)
     # print(num)
     
     
     # swaps keys and values ex: 'l':0 -> 0:'l'
-    decoder_ring = dict()
+    # decoder_ring = dict()
     for k, v in key.items():
         decoder_ring[v] = k
 
@@ -91,12 +92,14 @@ def encode(msg):
 
 def decode(msg, decoderRing):
     #removes unneccesary 0's
-    length = msg[-1]
+    # length = msg[-1]
+    length = decoderRing['num_zeros']
     msg = list(msg)
     i = 0
-    while i < int(length)+1:
+    while i < int(length):
         msg.pop()
         i += 1
+   
     
     msg = ''.join(msg)
 
@@ -120,13 +123,7 @@ def compress(msg):
 
     enc, ring = encode(msg)
     # print(len(enc), ring)
-
-    enc = list(enc)
-    if len(enc) % 8 != 0:
-        enc.pop()
-    enc = ''.join(enc)
-    print(len(enc))
-
+    
     arr = ''
     list_of_bytes = []
     for bit in enc:
@@ -140,21 +137,18 @@ def compress(msg):
 
 def string_2_bits(msg):
     msg = list(msg)
-    msg = [bin(ord(x))[2:].zfill(8) for x in msg]
-    return '_'.join(msg)
+    bin_str = ''
+    binary = ''
+    for byte in msg:
+        binary = bin(byte)
+        bin_str += binary[2:]
+    return bin_str
 
 def decompress(msg, decoderRing):
-    # print(msg)
-    # msg = list(msg)
-    # if len(msg) % 8 != 0:
-    #     msg.pop()
-    # msg = ''.join(msg)
-
     msg = string_2_bits(msg)
-    print(msg)
-    decoded = decode(msg, decoderRing)
-    print(decoded)
-    
+    comp_decode = decode(msg, decoderRing)
+    return comp_decode
+
     # first convert msg to string of 1's and 0's
     # then pass to decode
     # then convert to bytes object and return
@@ -168,64 +162,64 @@ def usage():
     exit(1)
 
 if __name__=='__main__':
-    msg = 'hello'
-
-    encoded_message, decoder_ring = encode(msg)
+    #msg = 'hello'
+    #encoded_message, decoder_ring = encode(msg)
     #print(encoded_message, decoder_ring)
     #decode(encoded_message, decoder_ring)
     #print(decode(encoded_message, decoder_ring))
     #print(compress(msg))
-    #compress(msg)
-    decompress(encoded_message, decoder_ring)
+    #comp, ring = compress(msg)
+    #decompress(comp, ring)
     #print(string_2_bits('1111100010'))
 
+    if len(sys.argv) != 4:
+        usage()
+    opt = sys.argv[1]
+    compressing = False
+    decompressing = False
+    encoding = False
+    decoding = False
+    if opt == "-c":
+        compressing = True
+    elif opt == "-d":
+        decompressing = True
+    elif opt == "-v":
+        encoding = True
+    elif opt == "-w":
+        decoding = True
+    else:
+        usage()
 
-    # if len(sys.argv) != 4:
-    #     usage()
-    # opt = sys.argv[1]
-    # compressing = False
-    # decompressing = False
-    # encoding = False
-    # decoding = False
-    # if opt == "-c":
-    #     compressing = True
-    # elif opt == "-d":
-    #     decompressing = True
-    # elif opt == "-v":
-    #     encoding = True
-    # elif opt == "-w":
-    #     decoding = True
-    # else:
-    #     usage()
+    infile = sys.argv[2]
+    outfile = sys.argv[3]
+    assert os.path.exists(infile)
 
-    # infile = sys.argv[2]
-    # outfile = sys.argv[3]
-    # assert os.path.exists(infile)
-
-    # if compressing or encoding:
-    #     fp = open(infile, 'rb')
-    #     msg = fp.read()
-    #     fp.close()
-    #     if compressing:
-    #         compr, decoder = compress(msg)
-    #         fcompressed = open(outfile, 'wb')
-    #         marshal.dump((pickle.dumps(decoder), compr), fcompressed)
-    #         fcompressed.close()
-    #     else:
-    #         enc, decoder = encode(msg)
-    #         print(msg)
-    #         fcompressed = open(outfile, 'wb')
-    #         marshal.dump((pickle.dumps(decoder), enc), fcompressed)
-    #         fcompressed.close()
-    # else:
-    #     fp = open(infile, 'rb')
-    #     pickleRick, compr = marshal.load(fp)
-    #     decoder = pickle.loads(pickleRick)
-    #     fp.close()
-    #     if decompressing:
-    #         msg = decompress(compr, decoder)
-    #     else:
-    #         msg = decode(compr, decoder)
-    #     fp = open(outfile, 'wb')
-    #     fp.write(msg)
-    #     fp.close()
+    if compressing or encoding:
+        fp = open(infile, 'rb')
+        msg = fp.read()
+        fp.close()
+        if compressing:
+            # cProfile.run('compress(msg)')
+            compr, decoder = compress(msg)
+            fcompressed = open(outfile, 'wb')
+            marshal.dump((pickle.dumps(decoder), compr), fcompressed)
+            fcompressed.close()
+        else:
+            enc, decoder = encode(msg)
+            print(enc)
+            fcompressed = open(outfile, 'wb')
+            marshal.dump((pickle.dumps(decoder), enc), fcompressed)
+            fcompressed.close()
+    else:
+        fp = open(infile, 'rb')
+        pickleRick, compr = marshal.load(fp)
+        decoder = pickle.loads(pickleRick)
+        fp.close()
+        if decompressing:
+            msg = decompress(compr, decoder)
+        else:
+            msg = decode(compr, decoder)
+            print(msg)
+        fp = open(outfile, 'wb')
+        fp.write(msg)
+        fp.close()

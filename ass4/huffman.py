@@ -9,31 +9,29 @@ try:
 except:
     import pickle
 
+# This functions builds a tree
 def build_tree(tuples):
     heap = []
     [heapq.heappush(heap, [l_f, None, None]) for l_f in tuples]
 
     while len(heap) > 1:
         left_child = heapq.heappop(heap)
-        right_child = heapq.heappop(heap)
-        #print(left_child, right_child)
-        left_freq, left_char = left_child[0]
-        right_freq, right_char = right_child[0]
-        # print(left_freq, left_char)
-        # print(right_freq, right_char)
-        freq = left_freq + right_freq
+        right_child = heapq.heappop(heap)           
 
-        label = ''.join((left_char,right_char))
-        #print(freq, label)
+        left_freq = left_child[0][0]
+        right_freq = right_child[0][0]
 
-        #create node
+        freq = left_freq + right_freq           # gets the freq of two nodes
+
         node = [(freq, ''), left_child, right_child]
-        #print(node)
         heapq.heappush(heap, node)
-    #print(heap)
-    #why use heap.pop()
+    
+    # returns heap
     return heap.pop()
 
+# This function allows me to traverse thru the three
+# assigns 0 to every left edge
+# assigns 1 to every right edge
 def traverse_tree(node, code, key_):
     if node is None:
         return
@@ -43,6 +41,7 @@ def traverse_tree(node, code, key_):
         traverse_tree(node[1], code + '0', key_)
         traverse_tree(node[2], code + '1', key_)
 
+# finds the frecuency of each letter
 def find_frequency(msg):
     frequency = dict()
     for char in msg:
@@ -51,17 +50,22 @@ def find_frequency(msg):
         frequency[char] += 1
     return frequency
 
+# turns the frequency dictionary into a tuple
 def turn_dict_to_tuple(frequency):
     tuples = []
     for char in frequency.keys():
         tuples.append((frequency[char],char))
     tuples.sort()
+    # returns a sorted tuple... sorted by frequency and letters
     return tuples
 
 
 def encode(msg):
+    # finds frequency of message for each letter
     frequency = find_frequency(msg)
+    #turns the frequency dictionary into a sorted tuple
     tuples = turn_dict_to_tuple(frequency)
+    # build a tree (min heap)
     tree = build_tree(tuples)
 
     key = dict()
@@ -73,34 +77,29 @@ def encode(msg):
     # print(len(encoded_message))
     decoder_ring = dict()
     if len(encoded_message) % 8 != 0:
-        # print(len(encoded_message))
-        # print(len(encoded_message) % 8)
+        # adds neccessary 0's to the encoded_message
+        # it will be usuful for compress function
         num = (8 - (len(encoded_message) % 8))
         encoded_message += (num) * '0'
-        #encoded_message += str(num)
+        # this is to keep track of the added zeros
         decoder_ring['num_zeros'] = num
-    # print(len(encoded_message), encoded_message)
-    # print(num)
-    
     
     # swaps keys and values ex: 'l':0 -> 0:'l'
-    # decoder_ring = dict()
     for k, v in key.items():
         decoder_ring[v] = k
 
+    # returns encoded message, and a dictionary key
     return encoded_message, decoder_ring
 
+# This function decodes the encoded message
 def decode(msg, decoderRing):
     #removes unneccesary 0's
-    # length = msg[-1]
     length = decoderRing['num_zeros']
     msg = list(msg)
     i = 0
     while i < int(length):
         msg.pop()
         i += 1
-   
-    
     msg = ''.join(msg)
 
     decoded = ''
@@ -117,24 +116,28 @@ def decode(msg, decoderRing):
             if start+i > len(msg):
                 flag = False
             i += 1
+    # returns the decoded message
     return decoded
 
+# this function compresses a message
 def compress(msg):
 
     enc, ring = encode(msg)
-    # print(len(enc), ring)
-    
+
     arr = ''
+    # useful to keep list of bytes
     list_of_bytes = []
     for bit in enc:
         arr += bit
         if len(arr) == 8:
+            # turns bits into binary number
             byte = int(arr, 2)
             list_of_bytes.append(byte)
             arr = ''
     ans = array.array('B', list_of_bytes)   
     return ans, ring
 
+# this function turns a string to bits
 def string_2_bits(msg):
     msg = list(msg)
     bin_str = ''
@@ -149,27 +152,19 @@ def decompress(msg, decoderRing):
     comp_decode = decode(msg, decoderRing)
     return comp_decode
 
-    # first convert msg to string of 1's and 0's
-    # then pass to decode
-    # then convert to bytes object and return
-    
-#     # Represent the message as an array
-#     byteArray = array.array('B',msg)
-#     raise NotImplementedError
-
 def usage():
     sys.stderr.write("Usage: {} [-c|-d|-v|-w] infile outfile\n".format(sys.argv[0]))
     exit(1)
 
 if __name__=='__main__':
-    #msg = 'hello'
-    #encoded_message, decoder_ring = encode(msg)
-    #print(encoded_message, decoder_ring)
-    #decode(encoded_message, decoder_ring)
-    #print(decode(encoded_message, decoder_ring))
-    #print(compress(msg))
-    #comp, ring = compress(msg)
-    #decompress(comp, ring)
+    # msg = 'hello'
+    # encoded_message, decoder_ring = encode(msg)
+    # print(encoded_message, decoder_ring)
+    # #decode(encoded_message, decoder_ring)
+    # print(decode(encoded_message, decoder_ring))
+    # print(compress(msg))
+    # comp, ring = compress(msg)
+    # print(decompress(comp, ring))
     #print(string_2_bits('1111100010'))
 
     if len(sys.argv) != 4:

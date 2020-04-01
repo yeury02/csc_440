@@ -72,7 +72,7 @@ def encode(msg):
         encoded_message += key[char]
     # print(len(encoded_message))
     
-    if len(encoded_message) % 8 != '0':
+    if len(encoded_message) % 8 != 0:
         # print(len(encoded_message))
         # print(len(encoded_message) % 8)
         num = (8 - (len(encoded_message) % 8))
@@ -122,10 +122,10 @@ def compress(msg):
     # print(len(enc), ring)
 
     enc = list(enc)
-    if len(enc) % 8 != '0':
+    if len(enc) % 8 != 0:
         enc.pop()
     enc = ''.join(enc)
-    # print(len(enc))
+    print(len(enc))
 
     arr = ''
     list_of_bytes = []
@@ -138,27 +138,34 @@ def compress(msg):
     ans = array.array('B', list_of_bytes)   
     return ans, ring
 
+def string_2_bits(msg):
+    msg = list(msg)
+    msg = [bin(ord(x))[2:].zfill(8) for x in msg]
+    return '_'.join(msg)
+
 def decompress(msg, decoderRing):
+    # print(msg)
+    # msg = list(msg)
+    # if len(msg) % 8 != 0:
+    #     msg.pop()
+    # msg = ''.join(msg)
 
-    msg = ''.join(format(ord(i), 'b') for i in msg) 
+    msg = string_2_bits(msg)
     print(msg)
-
     decoded = decode(msg, decoderRing)
-    print()
+    print(decoded)
     
     # first convert msg to string of 1's and 0's
     # then pass to decode
     # then convert to bytes object and return
-
-
     
 #     # Represent the message as an array
 #     byteArray = array.array('B',msg)
 #     raise NotImplementedError
 
-# def usage():
-#     sys.stderr.write("Usage: {} [-c|-d|-v|-w] infile outfile\n".format(sys.argv[0]))
-#     exit(1)
+def usage():
+    sys.stderr.write("Usage: {} [-c|-d|-v|-w] infile outfile\n".format(sys.argv[0]))
+    exit(1)
 
 if __name__=='__main__':
     msg = 'hello'
@@ -170,6 +177,7 @@ if __name__=='__main__':
     #print(compress(msg))
     #compress(msg)
     decompress(encoded_message, decoder_ring)
+    #print(string_2_bits('1111100010'))
 
 
     # if len(sys.argv) != 4:

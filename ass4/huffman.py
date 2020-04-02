@@ -13,6 +13,7 @@ except:
 def build_tree(tuples):
     heap = []
     [heapq.heappush(heap, [l_f, None, None]) for l_f in tuples]
+    #print(heap)
 
     while len(heap) > 1:
         left_child = heapq.heappop(heap)
@@ -24,7 +25,6 @@ def build_tree(tuples):
         freq = left_freq + right_freq           # gets the freq of two nodes
 
         node = [(freq, ''), left_child, right_child]
-
         heapq.heappush(heap, node)
 
     # returns heap
@@ -55,7 +55,7 @@ def find_frequency(msg):
 def turn_dict_to_tuple(frequency):
     tuples = []
     for char in frequency.keys():
-        tuples.append((frequency[char],char))
+        tuples.append((frequency[char],chr(char)))
     tuples.sort()
     # returns a sorted tuple... sorted by frequency and letters
     return tuples
@@ -74,7 +74,7 @@ def encode(msg):
 
     encoded_message = ''
     for char in msg:
-        encoded_message += key[char]
+        encoded_message += key[chr(char)]
     # print(len(encoded_message))
     decoder_ring = dict()
     if len(encoded_message) % 8 != 0:
@@ -118,7 +118,7 @@ def decode(msg, decoderRing):
                 flag = False
             i += 1
     # returns the decoded message
-    return decoded
+    return decoded.encode()
 
 # this function compresses a message
 def compress(msg):
@@ -142,10 +142,9 @@ def compress(msg):
 def string_2_bits(msg):
     msg = list(msg)
     bin_str = ''
-    binary = ''
     for byte in msg:
-        binary = bin(byte)
-        bin_str += binary[2:]
+        # binary = bin(byte)
+        bin_str += f"{byte:08b}"
     return bin_str
 
 def decompress(msg, decoderRing):
@@ -165,7 +164,7 @@ if __name__=='__main__':
     # print(decode(encoded_message, decoder_ring))
     # print(compress(msg))
     # comp, ring = compress(msg)
-    # decompress(comp, ring)
+    # decompress(comp, ring)r
     #print(string_2_bits('1111100010'))
 
     if len(sys.argv) != 4:

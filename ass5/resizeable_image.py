@@ -44,5 +44,5 @@ class ResizeableImage(imagematrix.ImageMatrix):
     def remove_best_seam(self):
         self.remove_seam(self.best_seam())
 
-# obj = ResizeableImage('sunset_small.png')
-# obj.best_seam()
+obj = ResizeableImage('sunset_small.png')
+obj.best_seam()

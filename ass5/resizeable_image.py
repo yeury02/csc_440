@@ -2,20 +2,16 @@ import imagematrix
 
 class ResizeableImage(imagematrix.ImageMatrix):
 
+    def find_seam(self, row, col):
+        min_path = []
+        min_path.append(row)
+        
+
     def naive_alg(self, row, col):
-        #base case: bottom row
-            # return energy(i,j)
-        #recursion: in the middle
-            #return energy(i,j) + min(seam energies of three pixels under i, j)
-
-        # 2 edge cases:
-            # first colum
-            # last colum
-
         # base case
         # check that I am at the last row
         if row == self.height - 1:
-            # print(self.height - 1)
+            print('hi')
             return self.energy(row, col)
         # edge case
         # check first column
@@ -31,6 +27,12 @@ class ResizeableImage(imagematrix.ImageMatrix):
         else:
             return self.energy(row, col) + min(self.naive_alg(row+1, col-1), self.naive_alg(row+1, col), self.naive_alg(row+1, col+1))
 
+    def dp_alg(self):
+        
+        matrix = []
+        matrix.append(self.image)
+        print(matrix)
+
     def best_seam(self, dp=True):
 
         if dp == True:
@@ -41,4 +43,5 @@ class ResizeableImage(imagematrix.ImageMatrix):
         self.remove_seam(self.best_seam())
 
 obj = ResizeableImage('8x8.png')
-obj.best_seam()
+# obj.best_seam()
+obj.dp_alg()

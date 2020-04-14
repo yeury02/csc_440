@@ -72,7 +72,7 @@ class ResizeableImage(imagematrix.ImageMatrix):
         self.all_seams = []
 
         if dp == False:
-            start_time = time.time()
+            #start_time = time.time()
             col = 0
             while col < self.width:
                 # third paramet is a list of tuple because it will allow me
@@ -86,10 +86,10 @@ class ResizeableImage(imagematrix.ImageMatrix):
             # and its energy
             best_path_with_lowest_energy = min(self.all_seams, key=lambda n: n[1])
             best_path = best_path_with_lowest_energy[0]
-            print("--- %s seconds ---" % (time.time() - start_time))
+            #print("--- %s seconds ---" % (time.time() - start_time))
 
         if dp == True:
-            start_time = time.time()
+            #start_time = time.time()
             energy_grid = []
             tracker = []
             for h in range(self.height):
@@ -102,13 +102,10 @@ class ResizeableImage(imagematrix.ImageMatrix):
                 tracker.append(row_t)
             best_path_with_lowest_energy = self.dynamic_path(energy_grid, tracker)
             best_path = best_path_with_lowest_energy[0]
-            print("--- %s seconds ---" % (time.time() - start_time))
+            #print("--- %s seconds ---" % (time.time() - start_time))
 
         # returns seam with lowest energy
         return best_path
 
     def remove_best_seam(self):
         self.remove_seam(self.best_seam())
-    
-obj = ResizeableImage('sunset_full.png')
-print(obj.best_seam(True))

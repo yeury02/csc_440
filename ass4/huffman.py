@@ -9,6 +9,32 @@ try:
 except:
     import pickle
 
+
+'''
+Invarient Algorithm:
+
+    Initialization: to start I created a tree, more specifically a heap 
+                    where at the beginning all the nodes are leaves.
+                    Leaves of frequencies and letters.
+
+    Maintenance: This is where building the huffman tree happens!!! 
+    
+                As long as we don't hit the root node, 
+                At each iteration, the two smalllest nodes of the heap
+                 are removed from the heap. Their frecuescies are added
+                 and created into a new node which is also pushed to the heap.
+                 So essentially, we remove 2 elements from the heap but add 
+                 1 at each iteration. SO overall, we are only removing 1
+                 element.
+
+    Termination: I know this terminates correctly as shown in the while loop.
+                It does the maintance as long as we do not hit the root node.
+                Which essentially is when we hit the length of heap at 1.
+                Once we hit the root node, then the program returns and terminates
+                as supposed to.
+
+'''
+
 # This functions builds a tree
 def build_tree(tuples):
     heap = []
